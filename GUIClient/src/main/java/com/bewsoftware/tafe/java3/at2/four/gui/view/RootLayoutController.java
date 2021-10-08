@@ -40,8 +40,15 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import static com.bewsoftware.tafe.java3.at2.four.gui.Views.BLANK;
+import static com.bewsoftware.tafe.java3.at2.four.gui.Views.CHAT;
+import static com.bewsoftware.tafe.java3.at2.four.gui.Views.LOGIN;
+import static com.bewsoftware.tafe.java3.at2.four.gui.Views.NEW_ACCOUNT;
+
 /**
- * FXML Controller class for the 'RootLayout.fxml' file.
+ * FXML Controller class for the 'RootLayout.fxml
+ * import static com.bewsoftware.tafe.java3.at2.four.gui.Views.LOGIN;
+ * ' file.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
@@ -111,7 +118,7 @@ public class RootLayoutController
 
             // Create the dialog Stage.
             Stage dialogStage = new Stage();
-            dialogStage.setTitle("About Java3 AT2 Three");
+            dialogStage.setTitle("About Java3 AT2 Four");
             dialogStage.initModality(Modality.WINDOW_MODAL);
             dialogStage.initOwner(app.getPrimaryStage());
             Scene scene = new Scene(page);
@@ -145,7 +152,7 @@ public class RootLayoutController
     @FXML
     private void handleChatCloseMenuItem(ActionEvent event)
     {
-        // todo
+        app.showView(BLANK);
     }
 
     /**
@@ -156,7 +163,7 @@ public class RootLayoutController
     @FXML
     private void handleChatOpenMenuItem(ActionEvent event)
     {
-        // todo
+        app.showView(CHAT);
     }
 
     /**
@@ -178,7 +185,7 @@ public class RootLayoutController
     @FXML
     private void handleLoginMenuItem(ActionEvent event)
     {
-        // todo
+        app.showView(LOGIN);
     }
 
     /**
@@ -189,7 +196,7 @@ public class RootLayoutController
     @FXML
     private void handleLogoutMenuItem(ActionEvent event)
     {
-        // todo
+        app.showView(BLANK);
     }
 
     /**
@@ -200,7 +207,7 @@ public class RootLayoutController
     @FXML
     private void handleNewAccountMenuItem(ActionEvent event)
     {
-        // todo
+        app.showView(NEW_ACCOUNT);
     }
 
     @FXML

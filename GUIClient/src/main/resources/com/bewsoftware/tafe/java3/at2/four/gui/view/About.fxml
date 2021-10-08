@@ -57,8 +57,8 @@
         <Label text="Copyright:" GridPane.rowIndex="4" />
         <Label text="License:" GridPane.rowIndex="5" />
         <Label text="Java3 AT2 Four" GridPane.columnIndex="1" />
-        <Label fx:id="verionLabel" text="v1.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-        <Label fx:id="buildDateLabel" text="8 October 2021" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+        <Label fx:id="verionLabel" text="Version" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+        <Label fx:id="buildDateLabel" text="Build Date" GridPane.columnIndex="1" GridPane.rowIndex="2" />
         <TextArea editable="false" focusTraversable="false" text="This program was developed for my Diploma in Software Developement at the South Metrolpolitan TAFE, Rockingham WA.&#10;&#10;The purpose is to develop a GUI application that allows the user to login to a remote server, and then open a chat session.&#10;" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
         <Label text="Copyright (c) 2020-2021 Bradley Willcott" GridPane.columnIndex="1" GridPane.rowIndex="4" />
         <TextArea editable="false" focusTraversable="false" text="    This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.&#10; &#10;    This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.&#10; &#10;    You should have received a copy of the GNU General Public License along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.&#10;" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="5" />

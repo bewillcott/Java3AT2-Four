@@ -31,8 +31,8 @@ import java.io.IOException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import static javafx.application.Application.launch;
@@ -90,19 +90,21 @@ public class App extends Application
     }
 
     /**
-     * Shows the MainWindow inside the root layout.
+     * Shows the view inside the root layout.
+     *
+     * @param view to display
      */
-    public void showMainWindow()
+    public void showView(Views view)
     {
         try
         {
             // Load person overview.
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(App.class.getResource("view/MainWindow.fxml"));
-            GridPane mainWindow = (GridPane) loader.load();
+            loader.setLocation(App.class.getResource("view/" + view + ".fxml"));
+            AnchorPane mainView = (AnchorPane) loader.load();
 
-            // Set person overview into the center of root layout.
-            rootLayout.setCenter(mainWindow);
+            // Set view into the center of root layout.
+            rootLayout.setCenter(mainView);
         } catch (IOException e)
         {
             e.printStackTrace();
@@ -116,8 +118,6 @@ public class App extends Application
         this.primaryStage.setTitle(TITLE);
 
         initRootLayout();
-
-        showMainWindow();
     }
 
 }
