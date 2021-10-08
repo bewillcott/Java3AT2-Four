@@ -233,6 +233,7 @@ public class PBKDF2
     {
         // Decode the hash into its parameters
         String[] params = correctHash.split(":");
+
         if (params.length != HASH_SECTIONS)
         {
             throw new InvalidHashException(
@@ -249,6 +250,7 @@ public class PBKDF2
         }
 
         int iterations = 0;
+
         try
         {
             iterations = Integer.parseInt(params[ITERATION_INDEX]);
@@ -268,6 +270,7 @@ public class PBKDF2
         }
 
         byte[] salt = null;
+
         try
         {
             salt = fromBase64(params[SALT_INDEX]);
@@ -280,6 +283,7 @@ public class PBKDF2
         }
 
         byte[] hash = null;
+
         try
         {
             hash = fromBase64(params[PBKDF2_INDEX]);
@@ -292,6 +296,7 @@ public class PBKDF2
         }
 
         int storedHashSize = 0;
+
         try
         {
             storedHashSize = Integer.parseInt(params[HASH_SIZE_INDEX]);
@@ -381,10 +386,12 @@ public class PBKDF2
     private static boolean slowEquals(byte[] a, byte[] b)
     {
         int diff = a.length ^ b.length;
+
         for (int i = 0; i < a.length && i < b.length; i++)
         {
             diff |= a[i] ^ b[i];
         }
+
         return diff == 0;
     }
 

@@ -40,7 +40,7 @@ import static com.bewsoftware.tafe.java3.at2.four.common.CSVRow.parseArray;
  * @since 1.0
  * @version 1.0
  */
-public class CSVFile
+public class CSVFile implements Iterable<CSVRow>
 {
     private final String fileName;
 
@@ -57,6 +57,18 @@ public class CSVFile
     {
         this.fileName = fileName;
         this.rows = new LinkedList<>();
+    }
+
+    /**
+     * Add a CSVRow to list.
+     *
+     * @param row to add
+     *
+     * @return {@code true} if successful
+     */
+    public boolean add(CSVRow row)
+    {
+        return rows.add(row);
     }
 
     /**
@@ -83,16 +95,6 @@ public class CSVFile
     }
 
     /**
-     * Get the CSV rows.
-     *
-     * @return iterator
-     */
-    public Iterator<CSVRow> getRows()
-    {
-        return rows.iterator();
-    }
-
-    /**
      * Returns {@code true} if a header exists.
      *
      * @return {@code true} if a header exists
@@ -102,7 +104,23 @@ public class CSVFile
         return header != null;
     }
 
-    public boolean readData(boolean hasHeader)
+    @Override
+    public Iterator<CSVRow> iterator()
+    {
+        return rows.iterator();
+    }
+
+    /**
+     * Read data from the CSV file.
+     *
+     * @param hasHeader Set to {@code true} if the first row of the CSV file
+     *                  is a header.
+     *
+     * @return {@code true} if the read in is successful
+     *
+     * @throws IOException if any
+     */
+    public boolean readData(boolean hasHeader) throws IOException
     {
         boolean rtn = false;
 
@@ -112,7 +130,6 @@ public class CSVFile
 
             if (file.exists())
             {
-
                 try (BufferedReader br = new BufferedReader(new FileReader(fileName)))
                 {
                     String next;
@@ -132,9 +149,6 @@ public class CSVFile
                     }
 
                     rtn = true;
-                } catch (IOException ex)
-                {
-                    System.out.format("ERROR: Failed to read from CSV file!\n%s\n", ex.getMessage());
                 }
             }
         }
@@ -146,37 +160,25 @@ public class CSVFile
      * Writes the CSV data.
      *
      * @return {@code true} if successful.
+     *
+     * @throws java.io.IOException if any
      */
-    public boolean writeData()
+    public boolean writeData() throws IOException
     {
         boolean rtn = false;
 
         if (rows.size() > 0 && fileName != null && !fileName.isBlank())
         {
-            File file = new File(fileName);
-
-            if (!file.exists())
+            try (FileWriter fw = new FileWriter(fileName))
             {
-                try (FileWriter fw = new FileWriter(fileName))
-                {
-                    fw.write(!(header == null || header.isEmpty()) ? header + "\n" : "");
-                } catch (IOException ex)
-                {
-                    ex.printStackTrace();
-                }
-            }
+                fw.write(!(header == null || header.isEmpty()) ? header.toString() + "\n" : "");
 
-            try (FileWriter sw = new FileWriter(fileName, true))
-            {
                 for (CSVRow row : rows)
                 {
-                    sw.write(row.toString() + "\n");
+                    fw.write(row.toString() + "\n");
                 }
 
                 rtn = true;
-            } catch (IOException ex)
-            {
-                System.out.format("ERROR: Failed to write to CSV file!\n%s\n", ex.getMessage());
             }
         }
 

@@ -42,12 +42,32 @@ import java.util.Objects;
  * reading-and-writing-csv-files-in-csharp</a>
  * <p>
  */
-final class CSVRow extends ArrayList<String> implements Comparable<CSVRow>
+public final class CSVRow extends ArrayList<String> implements Comparable<CSVRow>
 {
     private static final long serialVersionUID = -6189427601900989870L;
 
     /**
-     * Parses an of strings.
+     * Parses an array of strings.
+     *
+     * @param data array to parse
+     *
+     * @return a new CSVRow populated with information from the csvString.
+     */
+    public static CSVRow parse(String... data)
+    {
+        CSVRow rtn = null;
+
+        if (Objects.requireNonNull(data).length > 0)
+        {
+            rtn = new CSVRow();
+            rtn.addAll(Arrays.asList(data));
+        }
+
+        return rtn;
+    }
+
+    /**
+     * Parses an array of strings.
      *
      * @param data array to parse
      *

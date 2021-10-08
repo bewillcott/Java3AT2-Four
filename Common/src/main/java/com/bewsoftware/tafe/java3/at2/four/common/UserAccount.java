@@ -1,5 +1,5 @@
 /*
- *  File Name:    module-info.java
+ *  File Name:    UserAccount.java
  *  Project Name: Common
  * 
  *  Copyright (c) 2021 Bradley Willcott
@@ -20,20 +20,45 @@
  * ****************************************************************
  * Name: Bradley Willcott
  * ID:   M198449
- * Date: 8 Oct 2021
+ * Date: 9 Oct 2021
  * ****************************************************************
  */
 
+package com.bewsoftware.tafe.java3.at2.four.common;
+
+import java.rmi.Remote;
+import java.rmi.RemoteException;
 /**
- * Common module description.
+ * UserAccount interface description.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0
  * @version 1.0
  */
-module Common {
-    requires transitive java.rmi;
+public interface UserAccount extends Remote
+{
+    /**
+     * Create a new User Account.
+     *
+     * @param username to use
+     * @param password to use
+     *
+     * @return {@code true} if successful
+     *
+     * @throws RemoteException if any
+     */
+    boolean create(String username, String password) throws RemoteException;
 
-    exports com.bewsoftware.tafe.java3.at2.four.common;
+    /**
+     * Login the user.
+     *
+     * @param username to use
+     * @param password to use
+     *
+     * @return {@code true} if successful
+     *
+     * @throws RemoteException if any
+     */
+    boolean login(String username, String password) throws RemoteException;
 }
