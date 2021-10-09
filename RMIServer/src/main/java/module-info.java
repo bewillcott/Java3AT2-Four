@@ -13,6 +13,6 @@
  * @version 1.0
  */
 module RMIServer {
-    requires Common;
+    requires CommonLibrary;
     requires java.logging;
 }

@@ -55,12 +55,11 @@ public class Server implements UserAccount
     {
         try
         {
-            String name = "UserAccounts";
             UserAccount engine = new Server();
             UserAccount stub = (UserAccount) UnicastRemoteObject.exportObject(engine, 0);
 
             registry = LocateRegistry.createRegistry(0);
-            registry.rebind(name, stub);
+            registry.rebind(RMI_NAME, stub);
             System.out.println("Server bound");
         } catch (RemoteException e)
         {
@@ -72,12 +71,12 @@ public class Server implements UserAccount
     /**
      * The data from/for the CSV file.
      */
-    private CSVFile userCSVFile;
+    private final CSVFile userCSVFile;
 
     /**
      * The sorted list of registered users.
      */
-    private AvlTree<User> users;
+    private final AvlTree<User> users;
 
     /**
      * Instantiate a new copy of the Server class.
