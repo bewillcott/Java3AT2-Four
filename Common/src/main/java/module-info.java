@@ -32,7 +32,7 @@
  * @since 1.0
  * @version 1.0
  */
-module Common {
+module CommonLibrary {
     requires transitive java.rmi;
 
     exports com.bewsoftware.tafe.java3.at2.four.common;
