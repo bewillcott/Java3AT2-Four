@@ -6,9 +6,13 @@
 
 package com.bewsoftware.tafe.java3.at2.four.server.rmi;
 
+import com.bewsoftware.tafe.java3.at2.four.common.AvlTree;
+import com.bewsoftware.tafe.java3.at2.four.common.CSVFile;
+import com.bewsoftware.tafe.java3.at2.four.common.CSVRow;
+import com.bewsoftware.tafe.java3.at2.four.common.PBKDF2;
 import com.bewsoftware.tafe.java3.at2.four.common.PBKDF2.CannotPerformOperationException;
 import com.bewsoftware.tafe.java3.at2.four.common.PBKDF2.InvalidHashException;
-import com.bewsoftware.tafe.java3.at2.four.common.*;
+import common.UserAccount;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -34,8 +38,6 @@ public class Server implements UserAccount
      */
     private static final String DATASTORE = "user_accounts.csv";
 
-    private static Registry registry;
-
     /**
      * CSV file header text.
      */
@@ -43,6 +45,8 @@ public class Server implements UserAccount
     {
         "Username", "PasswordHash"
     };
+
+    private static Registry registry;
 
     private static final long serialVersionUID = 7163705544013025860L;
 
@@ -55,11 +59,13 @@ public class Server implements UserAccount
     {
         try
         {
+//            System.setProperty("java.rmi.server.hostname", "localhost");
             UserAccount engine = new Server();
             UserAccount stub = (UserAccount) UnicastRemoteObject.exportObject(engine, 0);
 
-            registry = LocateRegistry.createRegistry(0);
+            registry = LocateRegistry.createRegistry(1099);
             registry.rebind(RMI_NAME, stub);
+//            String ip = System.getProperty("java.rmi.server.hostname");
             System.out.println("Server bound");
         } catch (RemoteException e)
         {
