@@ -36,4 +36,6 @@ module CommonLibrary {
     requires transitive java.rmi;
 
     exports com.bewsoftware.tafe.java3.at2.four.common;
+    exports common;
+
 }

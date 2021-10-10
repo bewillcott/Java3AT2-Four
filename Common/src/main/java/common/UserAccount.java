@@ -24,13 +24,14 @@
  * ****************************************************************
  */
 
-package com.bewsoftware.tafe.java3.at2.four.common;
+package common;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 /**
- * UserAccount interface description.
+ * This is a Remote interface, used in the provision of the RMI service:
+ * "UserAccounts".
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *

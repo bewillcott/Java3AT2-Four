@@ -37,9 +37,11 @@ import java.util.Objects;
  * <p>
  * <b>Note:</b>
  * <ul>
- * <li><i>This implementation does not allow {@code null } items to be added.</i></li>
+ * <li><i>This implementation does not allow {@code null } items to be
+ * added.</i></li>
  * <li>By default, this implementation allows duplicate items to be added.<br>
- * However, it is possible to change that at instantiation - see: {@linkplain #LinkedList(boolean) }.</li>
+ * However, it is possible to change that at instantiation - see: {@linkplain #LinkedList(boolean)
+ * }.</li>
  * </ul>
  *
  *
@@ -100,7 +102,8 @@ public class LinkedList<E> implements Externalizable, Iterable<E>
      * <p>
      * Duplicates are allowed.
      */
-    public LinkedList() {
+    public LinkedList()
+    {
         allowDuplicates = true;
     }
 
@@ -109,7 +112,8 @@ public class LinkedList<E> implements Externalizable, Iterable<E>
      *
      * @param allowDuplicates Allow duplicates?
      */
-    public LinkedList(final boolean allowDuplicates) {
+    public LinkedList(final boolean allowDuplicates)
+    {
         this.allowDuplicates = allowDuplicates;
     }
 
@@ -118,7 +122,8 @@ public class LinkedList<E> implements Externalizable, Iterable<E>
      * <p>
      * This item becomes the current reference point in the list.
      * <p>
-     * <b>Note:</b> This implementation does not allow {@code null } items to be added.
+     * <b>Note:</b> This implementation does not allow {@code null } items to be
+     * added.
      *
      * @param item to add
      *
@@ -126,7 +131,8 @@ public class LinkedList<E> implements Externalizable, Iterable<E>
      *
      * @throws NullPointerException if item is {@code null}
      */
-    public boolean add(final E item) {
+    public boolean add(final E item)
+    {
         Node<E> node = new Node<>(Objects.requireNonNull(item, NO_NULL));
 
         // Is the list empty?
@@ -158,7 +164,8 @@ public class LinkedList<E> implements Externalizable, Iterable<E>
     /**
      * Reset this list to an empty list.
      */
-    public void clear() {
+    public void clear()
+    {
         current = null;
         first = null;
         last = null;
@@ -176,7 +183,8 @@ public class LinkedList<E> implements Externalizable, Iterable<E>
      *
      * @throws NullPointerException if item is {@code null}
      */
-    public boolean contains(final E item) {
+    public boolean contains(final E item)
+    {
         Objects.requireNonNull(item, NO_NULL);
 
         boolean rtn = false;
@@ -204,9 +212,11 @@ public class LinkedList<E> implements Externalizable, Iterable<E>
      * <p>
      * If found, this becomes the current reference point in the list.
      *
-     * @return the item at the top of the list, or {@code null } if the list is empty
+     * @return the item at the top of the list, or {@code null } if the list is
+     *         empty
      */
-    public E first() {
+    public E first()
+    {
         current = first;
         return (first != null) ? first.item : null;
     }
@@ -216,11 +226,16 @@ public class LinkedList<E> implements Externalizable, Iterable<E>
      * <p>
      * If found, this becomes the current reference point in the list.
      * <p>
-     * <b>Note:</b> This is only useful, if the class used {@literal (<E>) } has an {@code equals(Object) } method
-     * that only checks for a subset of the classes properties. For example, a Country
-     * class that includes a list (internally) of cities. If only the country's {@code name }
-     * property is checked for equality, then using a new Country instance with the required
-     * name set, would would work, returning the internal copy with all the cities.
+     * <b>Note:</b> This is only useful, if the class used {@literal (<E>) } has
+     * an {@code equals(Object) } method
+     * that only checks for a subset of the classes properties. For example, a
+     * Country
+     * class that includes a list (internally) of cities. If only the country's
+     * {@code name}
+     * property is checked for equality, then using a new Country instance with
+     * the required
+     * name set, would work, returning the internal copy with all the
+     * cities.
      *
      * @param item to search for
      *
@@ -228,7 +243,8 @@ public class LinkedList<E> implements Externalizable, Iterable<E>
      *
      * @throws NullPointerException if item is {@code null}
      */
-    public E get(final E item) {
+    public E get(final E item)
+    {
         if (contains(item))
         {
             return current.item;
@@ -245,7 +261,8 @@ public class LinkedList<E> implements Externalizable, Iterable<E>
      * @return {@code true } if there is other item following the current one,
      *         {@code false } otherwise
      */
-    public boolean hasNext() {
+    public boolean hasNext()
+    {
         return (current != null && current.next != null);
     }
 
@@ -261,7 +278,8 @@ public class LinkedList<E> implements Externalizable, Iterable<E>
      *
      * @throws NullPointerException if item is {@code null}
      */
-    public boolean insert(final E item) {
+    public boolean insert(final E item)
+    {
 
         // Are we out of bounds or pointing at the top?
         if (current == null || current.previous == null)
@@ -308,7 +326,8 @@ public class LinkedList<E> implements Externalizable, Iterable<E>
      *
      * @throws NullPointerException if item is {@code null}
      */
-    public boolean insertAfter(final E item) {
+    public boolean insertAfter(final E item)
+    {
 
         // Are we out of bounds or pointing at the top?
         if (current == null || current.next == null)
@@ -345,17 +364,20 @@ public class LinkedList<E> implements Externalizable, Iterable<E>
 
     /**
      * Are duplicate items allowed in this instance of {@linkplain LinkedList }?
-     * <p>
+     *
      * @note Once set at instantiation, it cannot be changed.
      * @return the allowDuplicates
      */
-    public boolean isAllowDuplicates() {
+    public boolean isAllowDuplicates()
+    {
         return allowDuplicates;
     }
 
     @Override
-    public Iterator<E> iterator() {
-        return new Iterator<E>() {
+    public Iterator<E> iterator()
+    {
+        return new Iterator<E>()
+        {
 
             /**
              * First time this instance of {@code hasNaext() } was run.
@@ -363,7 +385,8 @@ public class LinkedList<E> implements Externalizable, Iterable<E>
             private boolean firstTime = true;
 
             @Override
-            public boolean hasNext() {
+            public boolean hasNext()
+            {
 
                 if (firstTime)
                 {
@@ -376,7 +399,8 @@ public class LinkedList<E> implements Externalizable, Iterable<E>
             }
 
             @Override
-            public E next() {
+            public E next()
+            {
                 if (firstTime)
                 {
                     firstTime = false;
@@ -388,7 +412,8 @@ public class LinkedList<E> implements Externalizable, Iterable<E>
             }
 
             @Override
-            public void remove() {
+            public void remove()
+            {
                 throw new UnsupportedOperationException("Not supported.");
             }
         };
@@ -399,9 +424,11 @@ public class LinkedList<E> implements Externalizable, Iterable<E>
      * <p>
      * If found, this becomes the current reference point in the list.
      *
-     * @return the item at the top of the list, or {@code null } if the list is empty
+     * @return the item at the top of the list, or {@code null } if the list is
+     *         empty
      */
-    public E last() {
+    public E last()
+    {
         current = last;
         return (last != null) ? last.item : null;
     }
@@ -419,7 +446,8 @@ public class LinkedList<E> implements Externalizable, Iterable<E>
      *
      * @throws NullPointerException if item is {@code null}
      */
-    public boolean next(final E item) {
+    public boolean next(final E item)
+    {
         Objects.requireNonNull(item, NO_NULL);
 
         boolean rtn = false;
@@ -452,7 +480,8 @@ public class LinkedList<E> implements Externalizable, Iterable<E>
      * @return the item found, or {@code null } if either past the end of the
      *         list, or the list is empty.
      */
-    public E next() {
+    public E next()
+    {
         E rtn = null;
 
         // Are we pointing to something?
@@ -473,11 +502,14 @@ public class LinkedList<E> implements Externalizable, Iterable<E>
     /**
      * Removes and returns the first item of this list.
      * <p>
-     * If successful, the new first item becomes the current reference point in the list.
+     * If successful, the new first item becomes the current reference point in
+     * the list.
      *
-     * @return the item at the top of the list, or {@code null } if the list is empty
+     * @return the item at the top of the list, or {@code null } if the list is
+     *         empty
      */
-    public E pop() {
+    public E pop()
+    {
         E item = null;
 
         // Is the list empty?
@@ -513,7 +545,8 @@ public class LinkedList<E> implements Externalizable, Iterable<E>
      * @return the item found, or {@code null } if either past the end of the
      *         list, or the list is empty.
      */
-    public E prev() {
+    public E prev()
+    {
         E rtn = null;
 
         // Are we pointing to something?
@@ -534,11 +567,14 @@ public class LinkedList<E> implements Externalizable, Iterable<E>
     /**
      * Removes and returns the last item of this list.
      * <p>
-     * If successful, the new last item becomes the current reference point in the list.
+     * If successful, the new last item becomes the current reference point in
+     * the list.
      *
-     * @return the item at the bottom of the list, or {@code null } if the list is empty
+     * @return the item at the bottom of the list, or {@code null } if the list
+     *         is empty
      */
-    public E pull() {
+    public E pull()
+    {
         E item = null;
 
         // Is the list empty?
@@ -568,7 +604,8 @@ public class LinkedList<E> implements Externalizable, Iterable<E>
      * <p>
      * If successful, this item becomes the current reference point in the list.
      * <p>
-     * <b>Note:</b> This implementation does not allow {@code null } items to be added.
+     * <b>Note:</b> This implementation does not allow {@code null } items to be
+     * added.
      *
      * @param item to add.
      *
@@ -576,7 +613,8 @@ public class LinkedList<E> implements Externalizable, Iterable<E>
      *
      * @throws NullPointerException if item is {@code null}
      */
-    public boolean push(final E item) {
+    public boolean push(final E item)
+    {
         Node<E> node = new Node<>(Objects.requireNonNull(item, NO_NULL));
 
         // Is the list empty?
@@ -606,7 +644,8 @@ public class LinkedList<E> implements Externalizable, Iterable<E>
     }
 
     @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
+    {
         int hashCode;
         int totalHashCode;
 
@@ -660,7 +699,8 @@ public class LinkedList<E> implements Externalizable, Iterable<E>
      *
      * @return {@code true } if successful, {@code false } otherwise
      */
-    public E remove() {
+    public E remove()
+    {
         E rtn = null;
 
         if (current != null)
@@ -693,12 +733,14 @@ public class LinkedList<E> implements Externalizable, Iterable<E>
      *
      * @return the number of items in this list
      */
-    public int size() {
+    public int size()
+    {
         return size;
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         StringBuilder sb = new StringBuilder("LinkedList{\n");
 
         sb.append("    size = ").append(size).append('\n');
@@ -723,7 +765,8 @@ public class LinkedList<E> implements Externalizable, Iterable<E>
     }
 
     @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
+    public void writeExternal(ObjectOutput out) throws IOException
+    {
         int hashCode;
         int totalHashCode;
 
@@ -770,10 +813,12 @@ public class LinkedList<E> implements Externalizable, Iterable<E>
      *
      * @param item to check for
      *
-     * @return {@code true } if {@code allowDuplicates } is {@code false } and item is found,
+     * @return {@code true } if {@code allowDuplicates } is {@code false } and
+     *         item is found,
      *         {@code false } otherwise.
      */
-    private boolean foundDisallowedDuplicate(final E item) {
+    private boolean foundDisallowedDuplicate(final E item)
+    {
         boolean rtn = false;
 
         // Are duplicates allowed?
@@ -795,7 +840,8 @@ public class LinkedList<E> implements Externalizable, Iterable<E>
     }
 
     /**
-     * This class is used by the {@linkplain LinkedList LinkedList&lt;E&gt;} class to store the items,
+     * This class is used by the {@linkplain LinkedList LinkedList&lt;E&gt;}
+     * class to store the items,
      * and then be linked together into a chain.
      * <p>
      * This class is a struct alternative.
@@ -805,7 +851,8 @@ public class LinkedList<E> implements Externalizable, Iterable<E>
      * @since 1.0
      * @version 1.0
      */
-    private class Node<E> {
+    private class Node<E>
+    {
 
         /**
          * The item being stored.
@@ -816,6 +863,7 @@ public class LinkedList<E> implements Externalizable, Iterable<E>
          * Link to the next node.
          */
         public Node<E> next;
+
         /**
          * Link to the previous node.
          */
@@ -826,12 +874,14 @@ public class LinkedList<E> implements Externalizable, Iterable<E>
          *
          * @param item the object being stored
          */
-        public Node(final E item) {
+        public Node(final E item)
+        {
             this.item = item;
         }
 
         @Override
-        public String toString() {
+        public String toString()
+        {
             return "Node{" + "item=" + item + '}';
         }
 

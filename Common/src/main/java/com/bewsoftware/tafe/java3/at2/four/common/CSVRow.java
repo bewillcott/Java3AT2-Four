@@ -40,7 +40,6 @@ import java.util.Objects;
  * article/blog:<br/>
  * <a href="https://www.codeproject.com/articles/415732/reading-and-writing-csv-files-in-csharp">
  * reading-and-writing-csv-files-in-csharp</a>
- * <p>
  */
 public final class CSVRow extends ArrayList<String> implements Comparable<CSVRow>
 {
