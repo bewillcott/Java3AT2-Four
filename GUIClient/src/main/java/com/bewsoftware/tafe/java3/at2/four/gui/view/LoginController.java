@@ -26,12 +26,27 @@
 
 package com.bewsoftware.tafe.java3.at2.four.gui.view;
 
+import com.bewsoftware.tafe.java3.at2.four.gui.App;
+import com.bewsoftware.tafe.java3.at2.four.gui.ViewController;
+import com.bewsoftware.tafe.java3.at2.four.gui.Views;
+import common.UserAccount;
+import java.beans.PropertyChangeEvent;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+
+import static com.bewsoftware.tafe.java3.at2.four.gui.Views.BLANK;
+import static com.bewsoftware.tafe.java3.at2.four.gui.Views.LOGIN;
+import static common.UserAccount.RMI_NAME;
 
 /**
  * FXML Controller class for the 'Login.fxml' file.
@@ -41,8 +56,10 @@ import javafx.scene.control.TextField;
  * @since 1.0
  * @version 1.0
  */
-public class LoginController
+public class LoginController implements ViewController
 {
+    private App app;
+
     @FXML
     private Label errorMessageLabel;
 
@@ -66,6 +83,43 @@ public class LoginController
         // NoOp
     }
 
+    @Override
+    public void setApp(App app)
+    {
+        this.app = app;
+        usernameTextField.setText(app.getUserName());
+        app.setStatusText("");
+        app.addPropertyChangeListener(this);
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt)
+    {
+        switch (evt.getPropertyName())
+        {
+            case App.PROP_ACTIVEVIEW:
+            {
+                if ((Views) evt.getOldValue() == LOGIN)
+                {
+                    app.removePropertyChangeListener(this);
+                }
+
+                break;
+            }
+
+            default:
+            {
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void setFocus()
+    {
+        usernameTextField.requestFocus();
+    }
+
     /**
      * Handle the Reset Button event.
      *
@@ -74,7 +128,9 @@ public class LoginController
     @FXML
     private void handleResetButton(ActionEvent event)
     {
-        // todo
+        usernameTextField.clear();
+        thePasswordField.clear();
+        event.consume();
     }
 
     /**
@@ -85,7 +141,29 @@ public class LoginController
     @FXML
     private void handleSubmitButton(ActionEvent event)
     {
-        // todo
-    }
+        try
+        {
+            Registry registry = LocateRegistry.getRegistry();
+            UserAccount userAccount = (UserAccount) registry.lookup(RMI_NAME);
 
+            if (userAccount.login(usernameTextField.getText(), thePasswordField.getText()))
+            {
+                // Login successful!
+                app.setStatusText("Login successful!");
+                app.setLoggedIn(true);
+                app.setUserName(usernameTextField.getText());
+                app.showView(BLANK);
+            } else
+            {
+                // Login FAILED!
+                app.setStatusText("Login FAILED! Try again.");
+                usernameTextField.requestFocus();
+            }
+        } catch (RemoteException | NotBoundException ex)
+        {
+            Logger.getLogger(NewAccountController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        event.consume();
+    }
 }

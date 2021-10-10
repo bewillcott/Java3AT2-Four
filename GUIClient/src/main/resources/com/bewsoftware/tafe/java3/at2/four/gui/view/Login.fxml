@@ -95,8 +95,8 @@
             <bottom>
                 <ButtonBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                     <buttons>
+                        <Button fx:id="submitButton" defaultButton="false" onAction="#handleSubmitButton" text="_Submit" />
                         <Button fx:id="resetButton" onAction="#handleResetButton" text="_Reset" />
-                        <Button fx:id="submitButton" defaultButton="true" mnemonicParsing="false" onAction="#handleSubmitButton" text="Submit" />
                     </buttons>
                 </ButtonBar>
             </bottom>

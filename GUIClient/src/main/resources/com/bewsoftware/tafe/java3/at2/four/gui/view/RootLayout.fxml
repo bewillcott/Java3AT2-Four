@@ -80,17 +80,19 @@
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="163.0" minWidth="10.0" prefWidth="41.0" />
             </columnConstraints>
             <rowConstraints>
+                <RowConstraints minHeight="2.0" prefHeight="2.0" vgrow="NEVER" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-                <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                <javafx.scene.control.Separator GridPane.rowIndex="0" GridPane.columnSpan="2" />
+                <AnchorPane GridPane.rowIndex="1"  prefHeight="200.0" prefWidth="200.0">
                     <children>
                         <Label fx:id="statusLabel" text="Status" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                     </children>
                 </AnchorPane>
-                <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+                <ImageView fx:id="statusImageView" GridPane.rowIndex="1" fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
                     <image>
-                        <Image fx:id="statusImage" url="@../../../../../../../../images/bullet_green.png" />
+                        <Image url="@../../../../../../../../images/bullet_red.png" />
                     </image>
                     <GridPane.margin>
                         <Insets left="10.0" />

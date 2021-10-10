@@ -27,7 +27,13 @@
 package com.bewsoftware.tafe.java3.at2.four.gui.view;
 
 import com.bewsoftware.tafe.java3.at2.four.gui.App;
+import com.bewsoftware.tafe.java3.at2.four.gui.ViewController;
+import com.bewsoftware.tafe.java3.at2.four.gui.Views;
+import java.beans.PropertyChangeEvent;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -36,6 +42,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -46,16 +53,14 @@ import static com.bewsoftware.tafe.java3.at2.four.gui.Views.LOGIN;
 import static com.bewsoftware.tafe.java3.at2.four.gui.Views.NEW_ACCOUNT;
 
 /**
- * FXML Controller class for the 'RootLayout.fxml
- * import static com.bewsoftware.tafe.java3.at2.four.gui.Views.LOGIN;
- * ' file.
+ * FXML Controller class for the 'RootLayout.fxml' file.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0
  * @version 1.0
  */
-public class RootLayoutController
+public class RootLayoutController implements ViewController
 {
     @FXML
     private MenuItem aboutMenuItem;
@@ -71,6 +76,8 @@ public class RootLayoutController
     @FXML
     private MenuItem closeMenuItem;
 
+    private boolean loggedIn;
+
     @FXML
     private MenuItem loginMenuItem;
 
@@ -81,33 +88,262 @@ public class RootLayoutController
     private MenuItem newAccountMenuItem;
 
     @FXML
-    private Label statusLabel;
+    private ImageView statusImageView;
+
+    private Image[] statusImages;
 
     @FXML
-    private Image statusImage;
+    private Label statusLabel;
+
+    private Views currentView;
 
     /**
      * Instantiate a new copy of RootLayoutController class.
      */
     public RootLayoutController()
     {
-        // Currently: NoOp.
+        // NoOp
     }
 
-    /**
-     * Store a reference to the App instance.
-     *
-     * @param app
-     */
+    @Override
     public void setApp(App app)
     {
         this.app = app;
+        app.addPropertyChangeListener(this);
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt)
+    {
+        switch (evt.getPropertyName())
+        {
+            case App.PROP_ACTIVEVIEW:
+            {
+                // Views being opened:
+                currentView = (Views) evt.getNewValue();
+
+                switch ((Views) evt.getNewValue())
+                {
+                    case BLANK:
+                    {
+                        break;
+                    }
+
+                    case CHAT:
+                    {
+                        chatOpenMenuItem.setDisable(true);
+                        chatCloseMenuItem.setDisable(false);
+                        break;
+                    }
+
+                    case LOGIN:
+                    {
+                        loginMenuItem.setDisable(true);
+                        break;
+                    }
+
+                    case NEW_ACCOUNT:
+                    {
+                        newAccountMenuItem.setDisable(true);
+                        break;
+                    }
+
+                    default:
+                        break;
+                }
+
+                // Views being closed:
+                if (evt.getOldValue() != null)
+                {
+                    switch ((Views) evt.getOldValue())
+                    {
+                        case BLANK:
+                        {
+                            break;
+                        }
+
+                        case CHAT:
+                        {
+                            chatOpenMenuItem.setDisable(false);
+                            chatCloseMenuItem.setDisable(true);
+                            break;
+                        }
+
+                        case LOGIN:
+                        {
+                            loginMenuItem.setDisable(loggedIn);
+                            break;
+                        }
+
+                        case NEW_ACCOUNT:
+                        {
+                            newAccountMenuItem.setDisable(loggedIn);
+                            break;
+                        }
+
+                        default:
+                            break;
+                    }
+                }
+
+                break;
+            }
+
+            case App.PROP_LOGGEDIN:
+            {
+                loggedIn = (boolean) evt.getNewValue();
+
+                // Configure affected MenuItems
+                if (currentView != CHAT)
+                {
+                    chatOpenMenuItem.setDisable(!loggedIn);
+                }
+
+                loginMenuItem.setDisable(loggedIn);
+                logoutMenuItem.setDisable(!loggedIn);
+                newAccountMenuItem.setDisable(loggedIn);
+
+                if (loggedIn)
+                {
+                    // Show green status light
+                    statusImageView.setImage(statusImages[StatusImages.GREEN.idx]);
+                } else
+                {
+                    // Show red status light
+                    statusImageView.setImage(statusImages[StatusImages.RED.idx]);
+                }
+
+                break;
+            }
+
+            case App.PROP_STATUSTEXT:
+            {
+                statusLabel.setText((String) evt.getNewValue());
+                break;
+            }
+
+            default:
+            {
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void setFocus()
+    {
+        // NoOp
+    }
+
+    /**
+     * Handle the Help/About menu item event.
+     *
+     * @param event
+     */
+    @FXML
+    private void handleAboutMenuItem(ActionEvent event)
+    {
+        showAboutDialog();
+        event.consume();
+    }
+
+    /**
+     * Handle the Chat/Close menu item event.
+     *
+     * @param event
+     */
+    @FXML
+    private void handleChatCloseMenuItem(ActionEvent event)
+    {
+        app.showView(BLANK);
+        event.consume();
+    }
+
+    /**
+     * Handle the Chat/Open menu item event.
+     *
+     * @param event
+     */
+    @FXML
+    private void handleChatOpenMenuItem(ActionEvent event)
+    {
+        app.showView(CHAT);
+        event.consume();
+    }
+
+    /**
+     * Handle the File/Close menu item event.
+     *
+     * @param event
+     */
+    @FXML
+    private void handleCloseMenuItem(ActionEvent event)
+    {
+        Platform.exit();
+        event.consume();
+    }
+
+    /**
+     * Handle the User/Login menu item event.
+     *
+     * @param event
+     */
+    @FXML
+    private void handleLoginMenuItem(ActionEvent event)
+    {
+        app.showView(LOGIN);
+        event.consume();
+    }
+
+    /**
+     * Handle the User/Logout menu item event.
+     *
+     * @param event
+     */
+    @FXML
+    private void handleLogoutMenuItem(ActionEvent event)
+    {
+        app.setLoggedIn(false);
+        event.consume();
+    }
+
+    /**
+     * Handle the User/New Account menu item event.
+     *
+     * @param event
+     */
+    @FXML
+    private void handleNewAccountMenuItem(ActionEvent event)
+    {
+        app.showView(NEW_ACCOUNT);
+        event.consume();
+    }
+
+    /**
+     * Controller initialization.
+     *
+     * @throws java.io.IOException         if any
+     * @throws java.net.URISyntaxException if any
+     */
+    @FXML
+    private void initialize() throws IOException, URISyntaxException
+    {
+        chatOpenMenuItem.setDisable(true);
+        chatCloseMenuItem.setDisable(true);
+        logoutMenuItem.setDisable(true);
+        statusLabel.setText("");
+
+        statusImages = new Image[]
+        {
+            new Image(getClass().getResourceAsStream("/images/bullet_red.png"), 18, 18, true, true),
+            new Image(getClass().getResourceAsStream("/images/bullet_green.png"), 18, 18, true, true)
+        };
     }
 
     /**
      * Opens the About dialog.
      */
-    public void showAboutDialog()
+    private void showAboutDialog()
     {
         try
         {
@@ -127,94 +363,26 @@ public class RootLayoutController
 
             // Show the dialog and wait until the user closes it
             dialogStage.showAndWait();
-        } catch (IOException e)
+        } catch (IOException ex)
         {
-            e.printStackTrace();
+            Logger.getLogger(RootLayoutController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     /**
-     * Handle the Help/About menu item event.
-     *
-     * @param event
+     * Provide convenient indexing into the {@link #statusImages} array.
      */
-    @FXML
-    private void handleAboutMenuItem(ActionEvent event)
+    private enum StatusImages
     {
-        showAboutDialog();
-    }
+        RED(0),
+        GREEN(1);
 
-    /**
-     * Handle the Chat/Close menu item event.
-     *
-     * @param event
-     */
-    @FXML
-    private void handleChatCloseMenuItem(ActionEvent event)
-    {
-        app.showView(BLANK);
-    }
+        public final int idx;
 
-    /**
-     * Handle the Chat/Open menu item event.
-     *
-     * @param event
-     */
-    @FXML
-    private void handleChatOpenMenuItem(ActionEvent event)
-    {
-        app.showView(CHAT);
-    }
-
-    /**
-     * Handle the File/Close menu item event.
-     *
-     * @param event
-     */
-    @FXML
-    private void handleCloseMenuItem(ActionEvent event)
-    {
-        Platform.exit();
-    }
-
-    /**
-     * Handle the User/Login menu item event.
-     *
-     * @param event
-     */
-    @FXML
-    private void handleLoginMenuItem(ActionEvent event)
-    {
-        app.showView(LOGIN);
-    }
-
-    /**
-     * Handle the User/Logout menu item event.
-     *
-     * @param event
-     */
-    @FXML
-    private void handleLogoutMenuItem(ActionEvent event)
-    {
-        app.showView(BLANK);
-    }
-
-    /**
-     * Handle the User/New Account menu item event.
-     *
-     * @param event
-     */
-    @FXML
-    private void handleNewAccountMenuItem(ActionEvent event)
-    {
-        app.showView(NEW_ACCOUNT);
-    }
-
-    @FXML
-    private void initialize()
-    {
-        closeMenuItem.setOnAction(this::handleCloseMenuItem);
-        aboutMenuItem.setOnAction(this::handleAboutMenuItem);
+        private StatusImages(int idx)
+        {
+            this.idx = idx;
+        }
     }
 
 }

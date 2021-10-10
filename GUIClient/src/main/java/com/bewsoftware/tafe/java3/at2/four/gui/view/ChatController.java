@@ -26,11 +26,17 @@
 
 package com.bewsoftware.tafe.java3.at2.four.gui.view;
 
+import com.bewsoftware.tafe.java3.at2.four.gui.App;
+import com.bewsoftware.tafe.java3.at2.four.gui.ViewController;
+import com.bewsoftware.tafe.java3.at2.four.gui.Views;
+import java.beans.PropertyChangeEvent;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+
+import static com.bewsoftware.tafe.java3.at2.four.gui.Views.CHAT;
 
 /**
  * ChatController class description.
@@ -40,8 +46,9 @@ import javafx.scene.control.TextField;
  * @since 1.0
  * @version 1.0
  */
-public class ChatController
+public class ChatController implements ViewController
 {
+    private App app;
 
     @FXML
     private TextArea incomingMessagesTextArea;
@@ -60,6 +67,49 @@ public class ChatController
         // NoOp
     }
 
+    @Override
+    public void setApp(App app)
+    {
+        this.app = app;
+        app.setStatusText("");
+        app.addPropertyChangeListener(this);
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt)
+    {
+        switch (evt.getPropertyName())
+        {
+            case App.PROP_ACTIVEVIEW:
+            {
+                if ((Views) evt.getOldValue() == CHAT)
+                {
+                    app.removePropertyChangeListener(this);
+                }
+
+                break;
+            }
+
+            case App.PROP_LOGGEDIN:
+            {
+                sendButton.setDisable(!(boolean) evt.getNewValue());
+
+                break;
+            }
+
+            default:
+            {
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void setFocus()
+    {
+        outgoingMessageTextField.requestFocus();
+    }
+
     /**
      * Handle the Send Button event.
      *
@@ -68,7 +118,15 @@ public class ChatController
     @FXML
     private void handleSendButton(ActionEvent event)
     {
-        // todo
-    }
+        String text = outgoingMessageTextField.getText();
+        outgoingMessageTextField.clear();
 
+        outgoingMessagesTextArea.appendText(text + "\n");
+
+        // TODO: Send text to Socket Server
+        incomingMessagesTextArea.appendText(text + "\n");
+        outgoingMessageTextField.requestFocus();
+
+        event.consume();
+    }
 }

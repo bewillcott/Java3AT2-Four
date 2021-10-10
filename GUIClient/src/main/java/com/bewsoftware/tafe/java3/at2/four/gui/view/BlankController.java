@@ -1,5 +1,5 @@
 /*
- *  File Name:    module-info.java
+ *  File Name:    BlankController.java
  *  Project Name: GUIClient
  * 
  *  Copyright (c) 2021 Bradley Willcott
@@ -20,28 +20,44 @@
  * ****************************************************************
  * Name: Bradley Willcott
  * ID:   M198449
- * Date: 7 Oct 2021
+ * Date: 10 Oct 2021
  * ****************************************************************
  */
 
+package com.bewsoftware.tafe.java3.at2.four.gui.view;
+
+import com.bewsoftware.tafe.java3.at2.four.gui.App;
+import com.bewsoftware.tafe.java3.at2.four.gui.ViewController;
+import java.beans.PropertyChangeEvent;
+
 /**
- * GUIClient module description.
+ * This is a dummy controller, just to be compatible with the
+ * {@link App#showView(com.bewsoftware.tafe.java3.at2.four.gui.Views) App.setview(view)}
+ * method.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
  * @since 1.0
  * @version 1.0
  */
-module GUIClient {
-    requires javafx.controls;
-    requires javafx.fxml;
-    requires transitive javafx.graphics;
-    requires javafx.base;
-    requires java.rmi;
-    requires java.logging;
-    requires CommonLibrary;
-    requires java.desktop;
+public class BlankController implements ViewController
+{
+    @Override
+    public void setApp(App app)
+    {
+        // NoOp
+    }
 
-    opens com.bewsoftware.tafe.java3.at2.four.gui to javafx.graphics;
-    opens com.bewsoftware.tafe.java3.at2.four.gui.view to javafx.fxml, javafx.graphics;
+    @Override
+    public void propertyChange(PropertyChangeEvent evt)
+    {
+        // NoOp
+    }
+
+    @Override
+    public void setFocus()
+    {
+        // NoOp
+    }
+
 }
