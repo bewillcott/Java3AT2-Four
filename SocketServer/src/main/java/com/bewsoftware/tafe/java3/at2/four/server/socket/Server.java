@@ -99,30 +99,28 @@ public class Server
 
                                 switch (inLine)
                                 {
-                                    // if the client sends disconnect string, then stop
-                                    case DISCONNECT_STRING:
+                                    case DISCONNECT_SESSION ->
                                     {
                                         log("[%1$d] Client closed session.", sessionNumber);
                                         log("%1$s\n", LINE);
                                         sessionOpen = false;
-                                        break;
                                     }
 
-                                    // if the client sends terminate server string, then shutdown
-                                    case TERMINATE_SERVER:
+                                    case TERMINATE_SERVER ->
                                     {
                                         log("[%1$d] Client Terminated Server!!!", sessionNumber);
                                         log("%1$s\n", DOUBLE_LINE);
                                         sessionOpen = false;
                                         serverAlive = false;
-                                        break; // disconnect
+                                        // disconnect
                                     }
 
-                                    default:
+                                    default ->
                                     {
-                                        break;
                                     }
                                 }
+                                // if the client sends disconnect string, then stop
+                                // if the client sends terminate server string, then shutdown
 
                                 // Reply to client
                                 String outLine = "[" + sessionNumber + "] You said '" + inLine + "'";

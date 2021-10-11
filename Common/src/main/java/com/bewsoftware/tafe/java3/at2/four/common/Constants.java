@@ -44,7 +44,7 @@ public class Constants
     /**
      * Chat service disconnect string.
      */
-    public static final String DISCONNECT_STRING = "-=quit=-";
+    public static final String DISCONNECT_SESSION = "-=quit=-";
 
     /**
      * Title separator line.

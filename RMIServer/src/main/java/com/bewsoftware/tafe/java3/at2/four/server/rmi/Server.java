@@ -57,11 +57,6 @@ public class Server implements UserAccount
 {
 
     /**
-     * File to persist user account details.
-     */
-    private static final String DATASTORE = "user_accounts.csv";
-
-    /**
      * CSV file header text.
      */
     private static final String[] HEADER =
@@ -69,14 +64,17 @@ public class Server implements UserAccount
         "Username", "PasswordHash"
     };
 
-    private static Registry registry;
+    /**
+     * File to persist user account details.
+     */
+    static final String DATASTORE = "user_accounts.csv";
+
+    static Registry registry;
 
     /**
      * @param args the command line arguments
-     *
-     * @throws java.io.IOException if any
      */
-    public static void main(String[] args) throws IOException
+    public static void main(String[] args)
     {
         log("\n%1$s", DOUBLE_LINE);
         log("%1$sJava3 AT2 Four - RMI Server (%2$s)", TITLE_INDENT, VERSION);
@@ -90,7 +88,7 @@ public class Server implements UserAccount
             registry = LocateRegistry.createRegistry(1099);
             registry.bind(RMI_NAME, stub);
             log("Server bound\n%1$s\n", LINE);
-        } catch (AlreadyBoundException ex)
+        } catch (IOException | AlreadyBoundException ex)
         {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -146,13 +144,20 @@ public class Server implements UserAccount
                     userCSVFile.writeData();
                 }
 
-                log("New account created for: %1$s.", username);
-                log("User (%1$s) is logged in.", username);
                 rtn = true;
             } catch (CannotPerformOperationException | IOException ex)
             {
                 Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
             }
+        }
+
+        if (rtn)
+        {
+            log("New account created for: %1$s.", username);
+            log("User (%1$s) is logged in.", username);
+        } else
+        {
+            log("Account creation for: %1$s - FAILED!", username);
         }
 
         return rtn;
