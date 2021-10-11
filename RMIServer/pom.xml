@@ -25,29 +25,6 @@
             <artifactId>Common</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!--        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-controls</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-fxml</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-graphics</artifactId>
-            <classifier>win</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-graphics</artifactId>
-            <classifier>linux</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-graphics</artifactId>
-            <classifier>mac</classifier>
-        </dependency>-->
     </dependencies>
 
     <profiles>
@@ -96,8 +73,6 @@
                             </descriptors>
                             <archive>
                                 <manifest>
-                                    <!--                                    <addClasspath>true</addClasspath>
-                                    <classpathPrefix>./</classpathPrefix>-->
                                     <mainClass>${jar.manifest.mainClass}</mainClass>
                                     <addBuildEnvironmentEntries>true</addBuildEnvironmentEntries>
                                     <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
@@ -142,54 +117,6 @@
                     </compilerArgs>
                 </configuration>
             </plugin>
-            <!--            <plugin>
-                <groupId>org.openjfx</groupId>
-                <artifactId>javafx-maven-plugin</artifactId>
-
-                <configuration>
-                    <mainClass>${jar.manifest.mainClass}</mainClass>
-                </configuration>
-
-                <executions>
-                    <execution>
-                         Default configuration for running
-                         Usage: mvn clean javafx:run
-                        <id>default-cli</id>
-                    </execution>
-                    <execution>
-                         Configuration for manual attach debugging
-                         Usage: mvn clean javafx:run@debug
-                        <id>debug</id>
-                        <configuration>
-                            <options>
-                                <option>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=localhost:8000</option>
-                            </options>
-                        </configuration>
-                    </execution>
-                    <execution>
-                         Configuration for automatic IDE debugging
-                        <id>ide-debug</id>
-                        <configuration>
-                            <options>
-                                <option>-agentlib:jdwp=transport=dt_socket,server=n,address=${jpda.address}</option>
-                            </options>
-                        </configuration>
-                    </execution>
-                    <execution>
-                         Configuration for automatic IDE profiling
-                        <id>ide-profile</id>
-                        <configuration>
-                            <options>
-                                <option>${profiler.jvmargs.arg1}</option>
-                                <option>${profiler.jvmargs.arg2}</option>
-                                <option>${profiler.jvmargs.arg3}</option>
-                                <option>${profiler.jvmargs.arg4}</option>
-                                <option>${profiler.jvmargs.arg5}</option>
-                            </options>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>-->
 
             <!-- Build the 'jar' for local testing -->
             <plugin>
@@ -232,13 +159,6 @@
 
     <reporting>
         <plugins>
-            <!--            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                                <configuration>
-                    <configLocation>config/sun_checks.xml</configLocation>
-                </configuration>
-            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-plugin-plugin</artifactId>

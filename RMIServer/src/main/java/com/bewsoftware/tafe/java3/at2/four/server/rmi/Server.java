@@ -1,7 +1,27 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ *  File Name:    Server.java
+ *  Project Name: RMIServer
+ *
+ *  Copyright (c) 2021 Bradley Willcott
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * ****************************************************************
+ * Name: Bradley Willcott
+ * ID:   M198449
+ * Date: 9 Oct 2021
+ * ****************************************************************
  */
 
 package com.bewsoftware.tafe.java3.at2.four.server.rmi;
@@ -14,6 +34,7 @@ import com.bewsoftware.tafe.java3.at2.four.common.PBKDF2.CannotPerformOperationE
 import com.bewsoftware.tafe.java3.at2.four.common.PBKDF2.InvalidHashException;
 import common.UserAccount;
 import java.io.IOException;
+import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -22,8 +43,10 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static com.bewsoftware.tafe.java3.at2.four.common.Constants.*;
+
 /**
- * The RMI Server class.
+ * The RMI Server handles the back-end side of the User Login process.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
@@ -48,8 +71,6 @@ public class Server implements UserAccount
 
     private static Registry registry;
 
-    private static final long serialVersionUID = 7163705544013025860L;
-
     /**
      * @param args the command line arguments
      *
@@ -57,20 +78,21 @@ public class Server implements UserAccount
      */
     public static void main(String[] args) throws IOException
     {
+        log("\n%1$s", DOUBLE_LINE);
+        log("%1$sJava3 AT2 Four - RMI Server (%2$s)", TITLE_INDENT, VERSION);
+        log("%1$s\n", DOUBLE_LINE);
+
         try
         {
-//            System.setProperty("java.rmi.server.hostname", "localhost");
             UserAccount engine = new Server();
             UserAccount stub = (UserAccount) UnicastRemoteObject.exportObject(engine, 0);
 
             registry = LocateRegistry.createRegistry(1099);
-            registry.rebind(RMI_NAME, stub);
-//            String ip = System.getProperty("java.rmi.server.hostname");
-            System.out.println("Server bound");
-        } catch (RemoteException e)
+            registry.bind(RMI_NAME, stub);
+            log("Server bound\n%1$s\n", LINE);
+        } catch (AlreadyBoundException ex)
         {
-            System.err.println("Server exception:");
-            e.printStackTrace();
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -124,6 +146,8 @@ public class Server implements UserAccount
                     userCSVFile.writeData();
                 }
 
+                log("New account created for: %1$s.", username);
+                log("User (%1$s) is logged in.", username);
                 rtn = true;
             } catch (CannotPerformOperationException | IOException ex)
             {
@@ -151,6 +175,14 @@ public class Server implements UserAccount
             {
                 Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
             }
+        }
+
+        if (rtn)
+        {
+            log("User (%1$s) is logged in.", username);
+        } else
+        {
+            log("User (%1$s) failed to login.", username);
         }
 
         return rtn;
