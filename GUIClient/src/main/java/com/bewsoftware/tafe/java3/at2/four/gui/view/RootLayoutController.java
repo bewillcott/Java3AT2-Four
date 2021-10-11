@@ -120,40 +120,37 @@ public class RootLayoutController implements ViewController
     {
         switch (evt.getPropertyName())
         {
-            case App.PROP_ACTIVEVIEW:
+            case App.PROP_ACTIVEVIEW ->
             {
                 // Views being opened:
                 currentView = (Views) evt.getNewValue();
 
                 switch ((Views) evt.getNewValue())
                 {
-                    case BLANK:
+                    case BLANK ->
                     {
-                        break;
                     }
 
-                    case CHAT:
+                    case CHAT ->
                     {
                         chatOpenMenuItem.setDisable(true);
                         chatCloseMenuItem.setDisable(false);
                         chatTerminateServerMenuItem.setDisable(false);
-                        break;
                     }
 
-                    case LOGIN:
+                    case LOGIN ->
                     {
                         loginMenuItem.setDisable(true);
-                        break;
                     }
 
-                    case NEW_ACCOUNT:
+                    case NEW_ACCOUNT ->
                     {
                         newAccountMenuItem.setDisable(true);
-                        break;
                     }
 
-                    default:
-                        break;
+                    default ->
+                    {
+                    }
                 }
 
                 // Views being closed:
@@ -161,40 +158,36 @@ public class RootLayoutController implements ViewController
                 {
                     switch ((Views) evt.getOldValue())
                     {
-                        case BLANK:
+                        case BLANK ->
                         {
-                            break;
                         }
 
-                        case CHAT:
+                        case CHAT ->
                         {
                             chatOpenMenuItem.setDisable(!loggedIn);
                             chatCloseMenuItem.setDisable(true);
                             chatTerminateServerMenuItem.setDisable(true);
-                            break;
                         }
 
-                        case LOGIN:
+                        case LOGIN ->
                         {
                             loginMenuItem.setDisable(loggedIn);
-                            break;
                         }
 
-                        case NEW_ACCOUNT:
+                        case NEW_ACCOUNT ->
                         {
                             newAccountMenuItem.setDisable(loggedIn);
-                            break;
                         }
 
-                        default:
-                            break;
+                        default ->
+                        {
+                        }
                     }
                 }
 
-                break;
             }
 
-            case App.PROP_LOGGEDIN:
+            case App.PROP_LOGGEDIN ->
             {
                 loggedIn = (boolean) evt.getNewValue();
 
@@ -219,25 +212,21 @@ public class RootLayoutController implements ViewController
                     statusLabel.setText("");
                 }
 
-                break;
             }
 
-            case App.PROP_STATUSTEXT:
+            case App.PROP_STATUSTEXT ->
             {
                 statusLabel.setText((String) evt.getNewValue());
-                break;
             }
 
-            case App.PROP_TERMINATECHATSERVER:
+            case App.PROP_TERMINATECHATSERVER ->
             {
                 chatTerminateServerMenuItem.setDisable(true);
 
-                break;
             }
 
-            default:
+            default ->
             {
-                break;
             }
         }
     }

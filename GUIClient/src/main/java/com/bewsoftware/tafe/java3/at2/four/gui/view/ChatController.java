@@ -43,7 +43,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
-import static com.bewsoftware.tafe.java3.at2.four.common.Constants.DISCONNECT_STRING;
+import static com.bewsoftware.tafe.java3.at2.four.common.Constants.DISCONNECT_SESSION;
 import static com.bewsoftware.tafe.java3.at2.four.common.Constants.SERVER_PORT;
 import static com.bewsoftware.tafe.java3.at2.four.common.Constants.TERMINATE_SERVER;
 import static com.bewsoftware.tafe.java3.at2.four.gui.Views.CHAT;
@@ -102,11 +102,8 @@ public class ChatController implements ViewController
             outgoing = new PrintStream​(socket.getOutputStream(), true);
 
             // Receive incoming reply from Socket Server
-            if (!incoming.ready())
-            {
-                String line = incoming.readLine();
-                incomingMessagesTextArea.appendText(line + "\n\n");
-            }
+            String line = incoming.readLine();
+            incomingMessagesTextArea.appendText(line + "\n\n");
         } catch (IOException ex)
         {
             if (ex.getMessage().equals("Connection refused"))
@@ -125,7 +122,7 @@ public class ChatController implements ViewController
     {
         switch (evt.getPropertyName())
         {
-            case App.PROP_ACTIVEVIEW:
+            case App.PROP_ACTIVEVIEW ->
             {
                 if ((Views) evt.getOldValue() == CHAT)
                 {
@@ -133,34 +130,30 @@ public class ChatController implements ViewController
 
                     if (!sendButton.isDisable())
                     {
-                        closeConnection(DISCONNECT_STRING);
+                        closeConnection(DISCONNECT_SESSION);
                     }
 
                     app.setStatusText("");
                 }
 
-                break;
             }
 
-            case App.PROP_LOGGEDIN:
+            case App.PROP_LOGGEDIN ->
             {
                 sendButton.setDisable(!(boolean) evt.getNewValue());
-                closeConnection(DISCONNECT_STRING);
+                closeConnection(DISCONNECT_SESSION);
 
-                break;
             }
 
-            case App.PROP_TERMINATECHATSERVER:
+            case App.PROP_TERMINATECHATSERVER ->
             {
                 sendButton.setDisable(true);
                 closeConnection(TERMINATE_SERVER);
 
-                break;
             }
 
-            default:
+            default ->
             {
-                break;
             }
         }
     }
