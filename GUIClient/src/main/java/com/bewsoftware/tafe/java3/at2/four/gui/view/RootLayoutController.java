@@ -168,7 +168,7 @@ public class RootLayoutController implements ViewController
 
                         case CHAT:
                         {
-                            chatOpenMenuItem.setDisable(false);
+                            chatOpenMenuItem.setDisable(!loggedIn);
                             chatCloseMenuItem.setDisable(true);
                             chatTerminateServerMenuItem.setDisable(true);
                             break;
@@ -216,6 +216,7 @@ public class RootLayoutController implements ViewController
                 {
                     // Show red status light
                     statusImageView.setImage(statusImages[StatusImages.RED.idx]);
+                    statusLabel.setText("");
                 }
 
                 break;
