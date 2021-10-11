@@ -74,7 +74,12 @@ public class RootLayoutController implements ViewController
     private MenuItem chatOpenMenuItem;
 
     @FXML
+    private MenuItem chatTerminateServerMenuItem;
+
+    @FXML
     private MenuItem closeMenuItem;
+
+    private Views currentView;
 
     private boolean loggedIn;
 
@@ -94,8 +99,6 @@ public class RootLayoutController implements ViewController
 
     @FXML
     private Label statusLabel;
-
-    private Views currentView;
 
     /**
      * Instantiate a new copy of RootLayoutController class.
@@ -133,6 +136,7 @@ public class RootLayoutController implements ViewController
                     {
                         chatOpenMenuItem.setDisable(true);
                         chatCloseMenuItem.setDisable(false);
+                        chatTerminateServerMenuItem.setDisable(false);
                         break;
                     }
 
@@ -166,6 +170,7 @@ public class RootLayoutController implements ViewController
                         {
                             chatOpenMenuItem.setDisable(false);
                             chatCloseMenuItem.setDisable(true);
+                            chatTerminateServerMenuItem.setDisable(true);
                             break;
                         }
 
@@ -222,6 +227,13 @@ public class RootLayoutController implements ViewController
                 break;
             }
 
+            case App.PROP_TERMINATECHATSERVER:
+            {
+                chatTerminateServerMenuItem.setDisable(true);
+
+                break;
+            }
+
             default:
             {
                 break;
@@ -268,6 +280,18 @@ public class RootLayoutController implements ViewController
     private void handleChatOpenMenuItem(ActionEvent event)
     {
         app.showView(CHAT);
+        event.consume();
+    }
+
+    /**
+     * Handle the Chat/Shutdown Server menu item event.
+     *
+     * @param event
+     */
+    @FXML
+    private void handleChatTerminateServerMenuItem(ActionEvent event)
+    {
+        app.terminateChatServer();
         event.consume();
     }
 
@@ -330,6 +354,7 @@ public class RootLayoutController implements ViewController
     {
         chatOpenMenuItem.setDisable(true);
         chatCloseMenuItem.setDisable(true);
+        chatTerminateServerMenuItem.setDisable(true);
         logoutMenuItem.setDisable(true);
         statusLabel.setText("");
 

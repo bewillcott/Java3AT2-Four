@@ -31,6 +31,7 @@ import com.bewsoftware.tafe.java3.at2.four.gui.ViewController;
 import com.bewsoftware.tafe.java3.at2.four.gui.Views;
 import common.UserAccount;
 import java.beans.PropertyChangeEvent;
+import java.rmi.ConnectException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -61,26 +62,41 @@ import static java.util.regex.Pattern.compile;
  */
 public class NewAccountController implements ViewController
 {
-    private static final String PASSWORD_PATTERN_1 = "^.*[A-Z]+.*.*$";
+    private static final String PASSWORD_PATTERN_1_STRING = "^.*[A-Z]+.*.*$";
 
-    private static final String PASSWORD_PATTERN_2 = "^.*[0-9]+.*[0-9]+.*$";
+    private static final String PASSWORD_PATTERN_2_STRING = "^.*[0-9]+.*[0-9]+.*$";
 
-    private static final String USERNAME_PATTERN = "^[a-zA-Z]{1}[a-zA-Z0-9]+$";
+    private static final String USERNAME_PATTERN_1_STRING = "^[a-zA-Z]{1}.+$";
+
+    private static final String USERNAME_PATTERN_2_STRING = "^[a-zA-Z]{1}[a-zA-Z0-9]+$";
 
     /**
      * Used to validate a new password - pattern 1.
      */
-    private static Pattern passwordPattern1;
+    private static final Pattern PASSWORD_PATTERN_1;
 
     /**
      * Used to validate a new password - pattern 2.
      */
-    private static Pattern passwordPattern2;
+    private static final Pattern PASSWORD_PATTERN_2;
 
     /**
-     * Used to validate a new username.
+     * Used to validate a new username - pattern 1.
      */
-    private static Pattern usernamePattern;
+    private static final Pattern USERNAME_PATTERN_1;
+
+    /**
+     * Used to validate a new username - pattern 2.
+     */
+    private static final Pattern USERNAME_PATTERN_2;
+
+    static
+    {
+        USERNAME_PATTERN_1 = Pattern.compile(USERNAME_PATTERN_1_STRING);
+        USERNAME_PATTERN_2 = Pattern.compile(USERNAME_PATTERN_2_STRING);
+        PASSWORD_PATTERN_1 = compile(PASSWORD_PATTERN_1_STRING);
+        PASSWORD_PATTERN_2 = compile(PASSWORD_PATTERN_2_STRING);
+    }
 
     /**
      * Verify that the password fulfills the basic requirements.
@@ -94,37 +110,42 @@ public class NewAccountController implements ViewController
      *
      * @return {@code true} if valid
      */
-    private static boolean validPassword(String password1, String password2)
+    private boolean validPassword(String password1, String password2)
     {
         boolean rtn = false;
 
-        if ((password1 != null && password1.length() >= 8)
-                && (password2 != null && password2.length() == password1.length())
-                && (password1.equals(password2)))
+        if (password1 != null && password1.length() >= 8)
         {
-            if (passwordPattern1 == null)
-            {
-                passwordPattern1 = compile(PASSWORD_PATTERN_1);
-                passwordPattern2 = compile(PASSWORD_PATTERN_2);
-            }
+            Matcher matcher1 = PASSWORD_PATTERN_1.matcher(password1);
+            Matcher matcher2 = PASSWORD_PATTERN_2.matcher(password1);
 
-            Matcher matcher1 = passwordPattern1.matcher(password1);
-            Matcher matcher2 = passwordPattern2.matcher(password1);
-
-            if (matcher1.matches() && matcher2.matches())
+            if (matcher1.matches())
             {
-                rtn = true;
+                if (matcher2.matches())
+                {
+                    if (password1.equals(password2))
+                    {
+                        rtn = true;
+                    } else
+                    {
+                        app.setStatusText("Passwords must be the same.");
+                        secondPasswordField.requestFocus();
+                    }
+                } else
+                {
+                    app.setStatusText("Must contain at least two numbers.");
+                    firstPasswordField.requestFocus();
+                }
             } else
             {
-                String msg = "Password1: " + password1 + " - FAILED!";
-                Logger.getLogger(NewAccountController.class.getName()).log(Level.INFO, msg);
+                app.setStatusText("Must contain at least one UPPERCASE letter.");
+                firstPasswordField.requestFocus();
             }
+
         } else
         {
-            String msg = "FAILED:\n"
-                    + "Password #1: " + password1 + "\n"
-                    + "Password #2: " + password2 + "\n";
-            Logger.getLogger(NewAccountController.class.getName()).log(Level.INFO, msg);
+            app.setStatusText("Must be at least 8 characters long.");
+            firstPasswordField.requestFocus();
         }
 
         return rtn;
@@ -141,28 +162,34 @@ public class NewAccountController implements ViewController
      *
      * @return {@code true} if valid
      */
-    private static boolean validUsername(String username)
+    private boolean validUsername(String username)
     {
         boolean rtn = false;
 
         if (username != null && username.length() >= 8)
         {
+            Matcher matcher1 = USERNAME_PATTERN_1.matcher(username);
+            Matcher matcher2 = USERNAME_PATTERN_2.matcher(username);
 
-            if (usernamePattern == null)
+            if (matcher1.matches())
             {
-                usernamePattern = Pattern.compile(USERNAME_PATTERN);
-            }
-
-            Matcher matcher = usernamePattern.matcher(username);
-
-            if (matcher.matches())
-            {
-                rtn = true;
+                if (matcher2.matches())
+                {
+                    rtn = true;
+                } else
+                {
+                    app.setStatusText("Must contain only letters and numbers.");
+                    usernameTextField.requestFocus();
+                }
             } else
             {
-                String msg = "Username: " + username + " - FAILED!";
-                Logger.getLogger(NewAccountController.class.getName()).log(Level.INFO, msg);
+                app.setStatusText("Must begin with a letter.");
+                usernameTextField.requestFocus();
             }
+        } else
+        {
+            app.setStatusText("Must be at least 8 characters long.");
+            usernameTextField.requestFocus();
         }
 
         return rtn;
@@ -280,7 +307,15 @@ public class NewAccountController implements ViewController
                 }
             } catch (RemoteException | NotBoundException ex)
             {
-                Logger.getLogger(NewAccountController.class.getName()).log(Level.SEVERE, null, ex);
+                if (ex instanceof ConnectException cause
+                        && cause.getMessage().startsWith("Connection refused"))
+                {
+                    app.setStatusText("User Account Server: Connection refused!");
+                    usernameTextField.requestFocus();
+                } else
+                {
+                    Logger.getLogger(NewAccountController.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
 

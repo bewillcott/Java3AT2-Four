@@ -29,6 +29,9 @@ package com.bewsoftware.tafe.java3.at2.four.gui.view;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
+import static com.bewsoftware.tafe.java3.at2.four.common.Constants.BUILD_DATE;
+import static com.bewsoftware.tafe.java3.at2.four.common.Constants.VERSION;
+
 /**
  * FXML Controller class for the 'About.fxml' file.
  *
@@ -57,7 +60,7 @@ public class AboutController
     @FXML
     private void initialize()
     {
-        verionLabel.setText("v1.0");
-        buildDateLabel.setText("8 October 2021");
+        verionLabel.setText(VERSION);
+        buildDateLabel.setText(BUILD_DATE);
     }
 }

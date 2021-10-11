@@ -33,6 +33,7 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -42,7 +43,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="365.0" prefWidth="340.0" xmlns="http://javafx.com/javafx/16" fx:controller="com.bewsoftware.tafe.java3.at2.four.gui.view.RootLayoutController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="365.0" prefWidth="340.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bewsoftware.tafe.java3.at2.four.gui.view.RootLayoutController">
     <top>
         <MenuBar BorderPane.alignment="CENTER">
             <menus>
@@ -62,7 +63,9 @@
                 <Menu text="_Chat">
                     <items>
                         <MenuItem fx:id="chatOpenMenuItem" onAction="#handleChatOpenMenuItem" text="_Open" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem fx:id="chatCloseMenuItem" onAction="#handleChatCloseMenuItem" text="_Close" />
+                  <MenuItem fx:id="chatTerminateServerMenuItem" mnemonicParsing="false" onAction="#handleChatTerminateServerMenuItem" text="Shutdown Chat Server" />
                     </items>
                 </Menu>
                 <Menu text="_Help">
@@ -84,13 +87,13 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-                <javafx.scene.control.Separator GridPane.rowIndex="0" GridPane.columnSpan="2" />
-                <AnchorPane GridPane.rowIndex="1"  prefHeight="200.0" prefWidth="200.0">
+                <javafx.scene.control.Separator GridPane.columnSpan="2" GridPane.rowIndex="0" />
+                <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
                     <children>
                         <Label fx:id="statusLabel" text="Status" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                     </children>
                 </AnchorPane>
-                <ImageView fx:id="statusImageView" GridPane.rowIndex="1" fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+                <ImageView fx:id="statusImageView" fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
                     <image>
                         <Image url="@../../../../../../../../images/bullet_red.png" />
                     </image>

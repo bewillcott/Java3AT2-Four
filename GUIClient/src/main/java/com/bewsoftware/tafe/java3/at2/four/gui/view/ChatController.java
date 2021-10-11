@@ -30,12 +30,22 @@ import com.bewsoftware.tafe.java3.at2.four.gui.App;
 import com.bewsoftware.tafe.java3.at2.four.gui.ViewController;
 import com.bewsoftware.tafe.java3.at2.four.gui.Views;
 import java.beans.PropertyChangeEvent;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
+import static com.bewsoftware.tafe.java3.at2.four.common.Constants.DISCONNECT_STRING;
+import static com.bewsoftware.tafe.java3.at2.four.common.Constants.SERVER_PORT;
+import static com.bewsoftware.tafe.java3.at2.four.common.Constants.TERMINATE_SERVER;
 import static com.bewsoftware.tafe.java3.at2.four.gui.Views.CHAT;
 
 /**
@@ -48,10 +58,16 @@ import static com.bewsoftware.tafe.java3.at2.four.gui.Views.CHAT;
  */
 public class ChatController implements ViewController
 {
+    private static final String SERVER_NAME = "localhost";
+
     private App app;
+
+    private BufferedReader incoming; // input stream from server
 
     @FXML
     private TextArea incomingMessagesTextArea;
+
+    private PrintStream​ outgoing;
 
     @FXML
     private TextField outgoingMessageTextField;
@@ -61,6 +77,8 @@ public class ChatController implements ViewController
 
     @FXML
     private Button sendButton;
+
+    private Socket socket;
 
     public ChatController()
     {
@@ -73,6 +91,33 @@ public class ChatController implements ViewController
         this.app = app;
         app.setStatusText("");
         app.addPropertyChangeListener(this);
+
+        try
+        {
+            // create socket for connection
+            socket = new Socket(SERVER_NAME, SERVER_PORT);
+
+            // get input/output streams
+            incoming = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            outgoing = new PrintStream​(socket.getOutputStream(), true);
+
+            // Receive incoming reply from Socket Server
+            if (!incoming.ready())
+            {
+                String line = incoming.readLine();
+                incomingMessagesTextArea.appendText(line + "\n\n");
+            }
+        } catch (IOException ex)
+        {
+            if (ex.getMessage().equals("Connection refused"))
+            {
+                app.setStatusText("Chat Server: Connection refused!");
+                app.terminateChatServer();
+            } else
+            {
+                Logger.getLogger(ChatController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
     @Override
@@ -85,6 +130,13 @@ public class ChatController implements ViewController
                 if ((Views) evt.getOldValue() == CHAT)
                 {
                     app.removePropertyChangeListener(this);
+
+                    if (!sendButton.isDisable())
+                    {
+                        closeConnection(DISCONNECT_STRING);
+                    }
+
+                    app.setStatusText("");
                 }
 
                 break;
@@ -93,6 +145,15 @@ public class ChatController implements ViewController
             case App.PROP_LOGGEDIN:
             {
                 sendButton.setDisable(!(boolean) evt.getNewValue());
+                closeConnection(DISCONNECT_STRING);
+
+                break;
+            }
+
+            case App.PROP_TERMINATECHATSERVER:
+            {
+                sendButton.setDisable(true);
+                closeConnection(TERMINATE_SERVER);
 
                 break;
             }
@@ -111,6 +172,26 @@ public class ChatController implements ViewController
     }
 
     /**
+     * Close connection resources.
+     */
+    private void closeConnection(String finalMessage)
+    {
+        if (outgoing != null)
+        {
+            try
+            { // close resources
+                outgoing.println(finalMessage);
+                incoming.close();
+                outgoing.close();
+                socket.close();
+            } catch (IOException ex)
+            {
+                Logger.getLogger(ChatController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    /**
      * Handle the Send Button event.
      *
      * @param event
@@ -123,10 +204,19 @@ public class ChatController implements ViewController
 
         outgoingMessagesTextArea.appendText(text + "\n");
 
-        // TODO: Send text to Socket Server
-        incomingMessagesTextArea.appendText(text + "\n");
-        outgoingMessageTextField.requestFocus();
+        // Send text to Socket Server
+        outgoing.println(text);
 
+        try
+        { // Receive incoming reply from Socket Server
+            String line = incoming.readLine();
+            incomingMessagesTextArea.appendText(line + "\n");
+        } catch (IOException ex)
+        {
+            Logger.getLogger(ChatController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        outgoingMessageTextField.requestFocus();
         event.consume();
     }
 }

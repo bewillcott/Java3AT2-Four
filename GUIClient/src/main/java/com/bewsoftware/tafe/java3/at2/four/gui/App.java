@@ -178,6 +178,16 @@ public class App extends Application
         this.userName = userName;
     }
 
+    public static final String PROP_TERMINATECHATSERVER = "terminateChatServer";
+
+    /**
+     * Initiate the Terminate Chat Server process.
+     */
+    public void terminateChatServer()
+    {
+        propertyChangeSupport.firePropertyChange(PROP_TERMINATECHATSERVER, false, true);
+    }
+
     /**
      * Initializes the root layout.
      */

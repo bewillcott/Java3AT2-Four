@@ -31,6 +31,7 @@ import com.bewsoftware.tafe.java3.at2.four.gui.ViewController;
 import com.bewsoftware.tafe.java3.at2.four.gui.Views;
 import common.UserAccount;
 import java.beans.PropertyChangeEvent;
+import java.rmi.ConnectException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -161,7 +162,15 @@ public class LoginController implements ViewController
             }
         } catch (RemoteException | NotBoundException ex)
         {
-            Logger.getLogger(NewAccountController.class.getName()).log(Level.SEVERE, null, ex);
+            if (ex instanceof ConnectException cause
+                    && cause.getMessage().startsWith("Connection refused"))
+            {
+                app.setStatusText("User Account Server: Connection refused!");
+                usernameTextField.requestFocus();
+            } else
+            {
+                Logger.getLogger(NewAccountController.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
         event.consume();
