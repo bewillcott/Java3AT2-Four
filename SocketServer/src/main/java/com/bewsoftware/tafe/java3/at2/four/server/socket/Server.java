@@ -1,0 +1,170 @@
+/*
+ *  File Name:    Server.java
+ *  Project Name: SocketServer
+ *
+ *  Copyright (c) 2021 Bradley Willcott
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * ****************************************************************
+ * Name: Bradley Willcott
+ * ID:   M198449
+ * Date: 10 Oct 2021
+ * ****************************************************************
+ */
+
+package com.bewsoftware.tafe.java3.at2.four.server.socket;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+import static com.bewsoftware.tafe.java3.at2.four.common.Constants.DISCONNECT_STRING;
+import static com.bewsoftware.tafe.java3.at2.four.common.Constants.SERVER_PORT;
+import static com.bewsoftware.tafe.java3.at2.four.common.Constants.TERMINATE_SERVER;
+import static com.bewsoftware.tafe.java3.at2.four.common.Constants.VERSION;
+
+/**
+ * The Socket Server class.
+ *
+ * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
+ *
+ * @since 1.0
+ * @version 1.0
+ */
+public class Server
+{
+    /**
+     * Title separator line.
+     */
+    private static final String DOUBLE_LINE;
+
+    /**
+     * Session separator line.
+     */
+    private static final String LINE;
+
+    /**
+     * Title indent.
+     */
+    private static final String TITLE_INDENT;
+
+    static
+    {
+        DOUBLE_LINE = "=".repeat(80);
+        LINE = "-".repeat(80);
+        TITLE_INDENT = " ".repeat(20);
+    }
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args)
+    {
+        try (ServerSocket serverSocket = new ServerSocket(SERVER_PORT))
+        {
+            log("\n%1$s", DOUBLE_LINE);
+            log("%1$sJava3 AT2 Four - Socket Server (%2$s)", TITLE_INDENT, VERSION);
+            log("%1$s\n", DOUBLE_LINE);
+            log("Server is listening on port #%1$d", serverSocket.getLocalPort());
+            log("%1$s\n", LINE);
+
+            boolean serverAlive = true;
+            int sessionNumber = 0;
+
+            while (serverAlive)
+            {
+
+                try (Socket clientSocket = serverSocket.accept())
+                { // wait, listen and accept connection
+                    sessionNumber++;
+                    String clientHostName = clientSocket.getInetAddress().getHostName(); // client name
+                    int clientPortNumber = clientSocket.getLocalPort(); // port used
+
+                    log("[%1$d] Connected from %2$s on #%3$d", sessionNumber, clientHostName, clientPortNumber);
+
+                    try (
+                            // input stream from client
+                            BufferedReader inStream = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                            // output stream to client
+                            PrintStream outStream = new PrintStream​(clientSocket.getOutputStream(), true);)
+                    {
+                        boolean sessionOpen = true;
+
+                        // Notify client of connection success.
+                        String msg = "[" + sessionNumber + "] You have connect to Chat server " + VERSION + "";
+                        outStream.println(msg); // send a message to client
+
+                        while (sessionOpen)
+                        { // chatting loop
+                            String inLine = inStream.readLine(); // read a line from client
+                            log("[%1$d] Received from client: %2$s", sessionNumber, inLine);
+
+                            if (inLine == null)
+                            {
+                                log("[%1$d] Client disconnected uncleanly!", sessionNumber);
+                                log("%1$s\n", LINE);
+                                sessionOpen = false;
+                            } else
+                            {
+
+                                switch (inLine)
+                                {
+                                    // if the client sends disconnect string, then stop
+                                    case DISCONNECT_STRING:
+                                    {
+                                        log("[%1$d] Client closed session.", sessionNumber);
+                                        log("%1$s\n", LINE);
+                                        sessionOpen = false;
+                                        break;
+                                    }
+
+                                    // if the client sends terminate server string, then shutdown
+                                    case TERMINATE_SERVER:
+                                    {
+                                        log("[%1$d] Client Terminated Server!!!", sessionNumber);
+                                        log("%1$s\n", DOUBLE_LINE);
+                                        sessionOpen = false;
+                                        serverAlive = false;
+                                        break; // disconnect
+                                    }
+
+                                    default:
+                                    {
+                                        break;
+                                    }
+                                }
+
+                                // Reply to client
+                                String outLine = "[" + sessionNumber + "] You said '" + inLine + "'";
+                                outStream.println(outLine); // send a message to client
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (IOException e)
+        {
+            log("IOException occurred: \n%1$s", e);
+        }
+    }
+
+    private static void log(String message, Object... args)
+    {
+        System.out.printf(message + '\n', args);
+    }
+}

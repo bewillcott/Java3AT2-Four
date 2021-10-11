@@ -12,10 +12,10 @@
     <packaging>jar</packaging>
 
     <name>Socket Server</name>
-    <description>This is a server that provides XXXXX by way of Sockets.</description>
+    <description>This is a server that provides a Chat facility by way of Sockets.</description>
 
     <properties>
-        <jar.manifest.mainClass>com.bewsoftware.tafe.java3.at2.four.server.socket.Main</jar.manifest.mainClass>
+        <jar.manifest.mainClass>com.bewsoftware.tafe.java3.at2.four.server.socket.Server</jar.manifest.mainClass>
     </properties>
 
     <dependencies>
