@@ -33,13 +33,10 @@ import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import static com.bewsoftware.tafe.java3.at2.four.common.Constants.DISCONNECT_STRING;
-import static com.bewsoftware.tafe.java3.at2.four.common.Constants.SERVER_PORT;
-import static com.bewsoftware.tafe.java3.at2.four.common.Constants.TERMINATE_SERVER;
-import static com.bewsoftware.tafe.java3.at2.four.common.Constants.VERSION;
+import static com.bewsoftware.tafe.java3.at2.four.common.Constants.*;
 
 /**
- * The Socket Server class.
+ * The Socket Server handles the back-end side of the Chat echo service.
  *
  * @author <a href="mailto:bw.opensource@yahoo.com">Bradley Willcott</a>
  *
@@ -48,28 +45,6 @@ import static com.bewsoftware.tafe.java3.at2.four.common.Constants.VERSION;
  */
 public class Server
 {
-    /**
-     * Title separator line.
-     */
-    private static final String DOUBLE_LINE;
-
-    /**
-     * Session separator line.
-     */
-    private static final String LINE;
-
-    /**
-     * Title indent.
-     */
-    private static final String TITLE_INDENT;
-
-    static
-    {
-        DOUBLE_LINE = "=".repeat(80);
-        LINE = "-".repeat(80);
-        TITLE_INDENT = " ".repeat(20);
-    }
-
     /**
      * @param args the command line arguments
      */
@@ -161,10 +136,5 @@ public class Server
         {
             log("IOException occurred: \n%1$s", e);
         }
-    }
-
-    private static void log(String message, Object... args)
-    {
-        System.out.printf(message + '\n', args);
     }
 }
