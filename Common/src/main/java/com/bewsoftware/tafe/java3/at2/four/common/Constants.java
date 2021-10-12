@@ -39,7 +39,7 @@ public class Constants
     /**
      * Build date of the project.
      */
-    public static final String BUILD_DATE = "11 October 2021";
+    public static final String BUILD_DATE = "12 October 2021";
 
     /**
      * Chat service disconnect string.
