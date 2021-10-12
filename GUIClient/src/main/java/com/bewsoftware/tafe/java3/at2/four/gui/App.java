@@ -65,6 +65,8 @@ public class App extends Application
      */
     public static final String PROP_STATUSTEXT = "statusText";
 
+    public static final String PROP_TERMINATECHATSERVER = "terminateChatServer";
+
     private static final String TITLE = "Java3 AT2 Four - Client";
 
     /**
@@ -178,16 +180,6 @@ public class App extends Application
         this.userName = userName;
     }
 
-    public static final String PROP_TERMINATECHATSERVER = "terminateChatServer";
-
-    /**
-     * Initiate the Terminate Chat Server process.
-     */
-    public void terminateChatServer()
-    {
-        propertyChangeSupport.firePropertyChange(PROP_TERMINATECHATSERVER, false, true);
-    }
-
     /**
      * Initializes the root layout.
      */
@@ -265,6 +257,14 @@ public class App extends Application
         this.primaryStage.setTitle(TITLE);
 
         initRootLayout();
+    }
+
+    /**
+     * Initiate the Terminate Chat Server process.
+     */
+    public void terminateChatServer()
+    {
+        propertyChangeSupport.firePropertyChange(PROP_TERMINATECHATSERVER, false, true);
     }
 
 }

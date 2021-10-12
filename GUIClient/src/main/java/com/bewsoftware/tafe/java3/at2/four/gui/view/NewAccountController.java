@@ -62,33 +62,34 @@ import static java.util.regex.Pattern.compile;
  */
 public class NewAccountController implements ViewController
 {
-    private static final String PASSWORD_PATTERN_1_STRING = "^.*[A-Z]+.*.*$";
-
-    private static final String PASSWORD_PATTERN_2_STRING = "^.*[0-9]+.*[0-9]+.*$";
-
-    private static final String USERNAME_PATTERN_1_STRING = "^[a-zA-Z]{1}.+$";
-
-    private static final String USERNAME_PATTERN_2_STRING = "^[a-zA-Z]{1}[a-zA-Z0-9]+$";
 
     /**
      * Used to validate a new password - pattern 1.
      */
     private static final Pattern PASSWORD_PATTERN_1;
 
+    private static final String PASSWORD_PATTERN_1_STRING = "^.*[A-Z]+.*.*$";
+
     /**
      * Used to validate a new password - pattern 2.
      */
     private static final Pattern PASSWORD_PATTERN_2;
+
+    private static final String PASSWORD_PATTERN_2_STRING = "^.*[0-9]+.*[0-9]+.*$";
 
     /**
      * Used to validate a new username - pattern 1.
      */
     private static final Pattern USERNAME_PATTERN_1;
 
+    private static final String USERNAME_PATTERN_1_STRING = "^[a-zA-Z]{1}.+$";
+
     /**
      * Used to validate a new username - pattern 2.
      */
     private static final Pattern USERNAME_PATTERN_2;
+
+    private static final String USERNAME_PATTERN_2_STRING = "^[a-zA-Z]{1}[a-zA-Z0-9]+$";
 
     static
     {
@@ -96,6 +97,133 @@ public class NewAccountController implements ViewController
         USERNAME_PATTERN_2 = Pattern.compile(USERNAME_PATTERN_2_STRING);
         PASSWORD_PATTERN_1 = compile(PASSWORD_PATTERN_1_STRING);
         PASSWORD_PATTERN_2 = compile(PASSWORD_PATTERN_2_STRING);
+    }
+
+    private App app;
+
+    @FXML
+    private Label confirmPasswordLabel;
+
+    @FXML
+    private Label errorMessageLabel;
+
+    @FXML
+    private PasswordField firstPasswordField;
+
+    @FXML
+    private Button resetButton;
+
+    @FXML
+    private PasswordField secondPasswordField;
+
+    @FXML
+    private Button submitButton;
+
+    @FXML
+    private TextField usernameTextField;
+
+    /**
+     * Instantiate a new copy of NewAccountController class.
+     */
+    public NewAccountController()
+    {
+        // NoOP
+    }
+
+    @Override
+    public void setApp(App app)
+    {
+        this.app = app;
+        app.setStatusText("");
+        app.addPropertyChangeListener(this);
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt)
+    {
+        switch (evt.getPropertyName())
+        {
+            case App.PROP_ACTIVEVIEW:
+            {
+                if ((Views) evt.getOldValue() == NEW_ACCOUNT)
+                {
+                    app.removePropertyChangeListener(this);
+                }
+
+                break;
+            }
+
+            default:
+            {
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void setFocus()
+    {
+        usernameTextField.requestFocus();
+    }
+
+    /**
+     * Handle the Reset Button event.
+     *
+     * @param event
+     */
+    @FXML
+    private void handleResetButton(ActionEvent event)
+    {
+        usernameTextField.clear();
+        firstPasswordField.clear();
+        secondPasswordField.clear();
+        event.consume();
+    }
+
+    /**
+     * Handle the Submit Button event.
+     *
+     * @param event
+     */
+    @FXML
+    private void handleSubmitButton(ActionEvent event)
+    {
+        if (validUsername(usernameTextField.getText())
+                && validPassword(firstPasswordField.getText(), secondPasswordField.getText()))
+        {
+            try
+            {
+                Registry registry = LocateRegistry.getRegistry();
+                UserAccount userAccount = (UserAccount) registry.lookup(RMI_NAME);
+
+                if (userAccount.create(usernameTextField.getText(), firstPasswordField.getText()))
+                {
+                    // Login successful!
+                    app.setStatusText("New account created! You are logged in.");
+                    app.setLoggedIn(true);
+                    app.setUserName(usernameTextField.getText());
+                    app.showView(BLANK);
+                } else
+                {
+                    // Login FAILED!
+                    app.setStatusText("New account creation FAILED! Try again.");
+                    usernameTextField.requestFocus();
+                }
+            } catch (RemoteException | NotBoundException ex)
+            {
+                if (ex instanceof ConnectException cause
+                        && cause.getMessage().startsWith("Connection refused"))
+                {
+                    app.setStatusText("User Account Server: Connection refused!");
+                    usernameTextField.requestFocus();
+                } else
+                {
+                    Logger.getLogger(NewAccountController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+
+        event.consume();
     }
 
     /**
@@ -193,132 +321,5 @@ public class NewAccountController implements ViewController
         }
 
         return rtn;
-    }
-
-    @FXML
-    private Label confirmPasswordLabel;
-
-    @FXML
-    private Label errorMessageLabel;
-
-    @FXML
-    private PasswordField firstPasswordField;
-
-    @FXML
-    private Button resetButton;
-
-    @FXML
-    private PasswordField secondPasswordField;
-
-    @FXML
-    private Button submitButton;
-
-    @FXML
-    private TextField usernameTextField;
-
-    /**
-     * Instantiate a new copy of NewAccountController class.
-     */
-    public NewAccountController()
-    {
-        // NoOP
-    }
-
-    private App app;
-
-    @Override
-    public void setApp(App app)
-    {
-        this.app = app;
-        app.setStatusText("");
-        app.addPropertyChangeListener(this);
-    }
-
-    @Override
-    public void propertyChange(PropertyChangeEvent evt)
-    {
-        switch (evt.getPropertyName())
-        {
-            case App.PROP_ACTIVEVIEW:
-            {
-                if ((Views) evt.getOldValue() == NEW_ACCOUNT)
-                {
-                    app.removePropertyChangeListener(this);
-                }
-
-                break;
-            }
-
-            default:
-            {
-                break;
-            }
-        }
-    }
-
-    @Override
-    public void setFocus()
-    {
-        usernameTextField.requestFocus();
-    }
-
-    /**
-     * Handle the Reset Button event.
-     *
-     * @param event
-     */
-    @FXML
-    private void handleResetButton(ActionEvent event)
-    {
-        usernameTextField.clear();
-        firstPasswordField.clear();
-        secondPasswordField.clear();
-        event.consume();
-    }
-
-    /**
-     * Handle the Submit Button event.
-     *
-     * @param event
-     */
-    @FXML
-    private void handleSubmitButton(ActionEvent event)
-    {
-        if (validUsername(usernameTextField.getText())
-                && validPassword(firstPasswordField.getText(), secondPasswordField.getText()))
-        {
-            try
-            {
-                Registry registry = LocateRegistry.getRegistry();
-                UserAccount userAccount = (UserAccount) registry.lookup(RMI_NAME);
-
-                if (userAccount.create(usernameTextField.getText(), firstPasswordField.getText()))
-                {
-                    // Login successful!
-                    app.setStatusText("New account created! You are logged in.");
-                    app.setLoggedIn(true);
-                    app.setUserName(usernameTextField.getText());
-                    app.showView(BLANK);
-                } else
-                {
-                    // Login FAILED!
-                    app.setStatusText("New account creation FAILED! Try again.");
-                    usernameTextField.requestFocus();
-                }
-            } catch (RemoteException | NotBoundException ex)
-            {
-                if (ex instanceof ConnectException cause
-                        && cause.getMessage().startsWith("Connection refused"))
-                {
-                    app.setStatusText("User Account Server: Connection refused!");
-                    usernameTextField.requestFocus();
-                } else
-                {
-                    Logger.getLogger(NewAccountController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
-
-        event.consume();
     }
 }
